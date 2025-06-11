@@ -71,6 +71,10 @@ class AppPackageMakerDeb extends AppPackageMaker {
 
     if (mkdirProcessResult.exitCode != 0) throw MakeError();
 
+    // Ensure DEBIAN directory has correct permissions (>=0755 and <=0775)
+    final chmodProcessResult = await $('chmod', ['755', debianDir]);
+    if (chmodProcessResult.exitCode != 0) throw MakeError('Failed to set permissions on DEBIAN directory');
+
     if (makeConfig.icon != null) {
       final iconFile = File(makeConfig.icon!);
       if (!iconFile.existsSync()) {
